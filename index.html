@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПЧ-2 Хөдөлмөрийн аюулгүй байдал, эрүүл ахуй</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .summary-donut {
+            background: conic-gradient(var(--donut-stops));
+        }
+        .summary-column {
+            flex: 0 0 104px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 min-h-screen text-slate-100 flex flex-col">
+
+    <!-- Navbar -->
+    <header class="glass sticky top-0 z-50 shadow-lg border-b border-white/10 text-slate-800 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md">
+                <i class="fa-solid fa-hard-hat text-xl"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg text-slate-900 leading-tight">Замын 2-р анги</h1>
+                <p class="text-xs text-slate-500 font-medium">ХАБЭА-н зааварчилгаа</p>
+            </div>
+        </div>
+        <div class="flex space-x-2">
+            <button onclick="switchTab('employee')" id="btn-employee" class="px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-600 text-white transition shadow-sm">
+                <i class="fa-solid fa-users mr-1.5"></i> Ажилтны хэсэг
+            </button>
+            <button onclick="switchTab('engineer')" id="btn-engineer" class="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition">
+                <i class="fa-solid fa-screwdriver-wrench mr-1.5"></i> Инженерийн хэсэг
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+
+        <!-- ================= EMPLOYEE SECTION ================= -->
+        <div id="section-employee" class="space-y-6">
+            <div class="glass p-6 rounded-2xl shadow-xl text-slate-800">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">ХАБЭА-н тухай мэдлэг ойлголт, зааварчилгаа</h2>
+                        <p class="text-sm text-slate-500">Зааварчилгааг бүрэн үзэж, мэдээллээ баталгаажуулна уу.</p>
+                    </div>
+                    <div class="w-full md:w-72">
+                        <input type="text" id="search-input" oninput="renderEmployeeVideos()" placeholder="Зааварчилгаа хайх..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
+                <!-- Video List Grid -->
+                <div id="employee-video-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Javascript will inject cards here -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= ENGINEER SECTION ================= -->
+        <div id="section-engineer" class="space-y-6 hidden">
+            <!-- Stats overview -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="glass p-5 rounded-2xl text-slate-800 shadow-md flex items-center space-x-4">
+                    <div class="bg-blue-100 text-blue-600 p-3.5 rounded-xl text-xl"><i class="fa-solid fa-video"></i></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-semibold uppercase">Нийт видео зааварчилгаа</p>
+                        <h3 id="stat-total-videos" class="text-2xl font-extrabold text-slate-900">0</h3>
+                    </div>
+                </div>
+                <div class="glass p-5 rounded-2xl text-slate-800 shadow-md flex items-center space-x-4">
+                    <div class="bg-emerald-100 text-emerald-600 p-3.5 rounded-xl text-xl"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-semibold uppercase">Зааварчилгаа авсан ажилтан</p>
+                        <h3 id="stat-total-logs" class="text-2xl font-extrabold text-slate-900">0</h3>
+                    </div>
+                </div>
+                <div class="glass p-5 rounded-2xl text-slate-800 shadow-md flex items-center space-x-4">
+                    <div class="bg-amber-100 text-amber-600 p-3.5 rounded-xl text-xl"><i class="fa-solid fa-user-shield"></i></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-semibold uppercase">ХАБЭА инженер</p>
+                        <h3 class="text-sm font-bold text-slate-900 mt-1">ПЧбт Ж.Оюунсайхан <br> 
+                            ПЧбт Х.Амартүвшин</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Table Section -->
+            <div class="glass p-6 rounded-2xl text-slate-800 shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center">
+                        <i class="fa-solid fa-list-check text-emerald-600 mr-2"></i> Ажилтнуудын зааварчилгаа авсан бүртгэл
+                    </h3>
+                    <button onclick="exportLogsCSV()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg transition">
+                        <i class="fa-solid fa-download mr-1"></i> Татах (CSV)
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-xs text-slate-500 uppercase font-semibold">
+                                <th class="py-3 px-4">Ажилтны нэр</th>
+                                <th class="py-3 px-4">Албан тушаал</th>
+                                <th class="py-3 px-4">Хэсэг</th>
+                                <th class="py-3 px-4">Зааварчилгааны нэр</th>
+                                <th class="py-3 px-4">Бүртгүүлсэн огноо</th>
+                                <th class="py-3 px-4 text-center">Үйлдэл</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-table-body" class="text-sm divide-y divide-slate-100">
+                            <!-- Javascript injects rows here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Monthly instruction summary -->
+            <div class="glass p-6 rounded-2xl text-slate-800 shadow-xl">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center">
+                    <i class="fa-solid fa-chart-column text-emerald-600 mr-2"></i> Сар бүрийн зааварчилгааны тайлан
+                </h3>
+                <div id="monthly-summary" class="space-y-6"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal for Watching Video & Signing -->
+    <div id="video-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl text-slate-800 flex flex-col max-h-[90vh]">
+            <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
+                <h3 id="modal-title" class="font-bold text-base truncate">Зааварчилгаа үзэх</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white transition text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-4 bg-black aspect-video relative flex items-center justify-center">
+                <iframe id="modal-iframe" src="" class="w-full h-full absolute inset-0" frameborder="0" allowfullscreen></iframe>
+                <video id="modal-video" class="w-full h-full absolute inset-0 hidden" controls></video>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-4">
+                <p id="modal-desc" class="text-sm text-slate-600"></p>
+                <hr class="border-slate-100">
+                <h4 class="font-bold text-slate-900 text-sm flex items-center"><i class="fa-solid fa-signature text-emerald-600 mr-2"></i> Зааварчилгаа авсан тухай баталгаажуулах</h4>
+                <form id="sign-form" onsubmit="handleSignForm(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="hidden" id="modal-vid-id">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Овог, нэр</label>
+                        <input type="text" id="emp-name" required placeholder="Б.Баасанжаргал" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Албан тушаал </label>
+                        <input type="text" id="emp-position" required placeholder="пр-4 / ПДБ" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Хэсэг</label>
+                        <input type="text" id="emp-section" required placeholder="ПД-15" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div class="sm:col-span-2 flex justify-end space-x-2 pt-2">
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition">Цуцлах</button>
+                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition shadow-md">
+                            <i class="fa-solid fa-check mr-1.5"></i> Зааварчилгаа авлаа
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Initial Mock Data if LocalStorage is empty
+        const defaultVideos = [
+            {
+                id: 1,
+                title: "Хөдөлмөрийн тухай хууль",
+                url: "https://www.youtube.com/watch?v=zRHwjcBIyIA",
+                description: "Зам төмөр солих болон өргөх үед аюулгүй ажиллагааны зааварчилгааг чанд баримтлах."
+            },
+            {
+                id: 2,
+                title: "Замын ангийн дотоод журам",
+                url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                description: "Өндөр хүчдэлийн тоног төхөөрөмж дээр засвар үйлчилгээ хийх үеийн хамгаалалт."
+            },
+            {
+                id: 3,
+                title: "Замын даргын А/09 тоот тушаал",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: "УБТЗ-н Хөдөлмөрийн аюулгүй байдал, эрүүл ахуй, байгаль орчны тухай дүрэм"
+            }
+            ,
+            {
+                id: 4,
+                title: "Замын даргын А/54 тоот тушаал",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: "Хөдөлмөрийн аюулгүй байдал, эрүүл ахуйн шаардлагыг хангах чиг үүрэг"
+            }
+            ,
+            {
+                id: 5,
+                title: "Замын даргын А/156 тоот тушаал",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: "Зам дээр хүн зөрчлийг мэдээлэх, судлан бүртгэх, дүн шинжилгээ хийх, хяналт тавих журам"
+            }
+            ,
+            {
+                id: 6,
+                title: "Замын даргын А/206 тоот тушаал",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: " Галт тэрэгний хөдөлгөөнтэй шууд холбоотой ажилтнууд албан үүргээ гүйцэтгэх үедээ гар утас ашиглах журам"
+            }
+            ,
+            {
+                id: 7,
+                title: "Замын даргын А/744 тоот тушаал",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: "Ажлын байрны эрсдэлийн үнэлгээ хийх журам"
+            }
+            ,
+            {
+                id: 8,
+                title: "Замын албаны даргын П/29 тоот тушаал",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: "Өртөөний замд ажил гүйцэтгэх үед баримтлах аюулгүйн замнал, П/47 тоот тушаал"
+            }
+            ,
+            {
+                id: 9,
+                title: "Төмөр замын аюултай бүс",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: "Төмөр замын аюултай бүсэд ажил үүрэг гүйцэтгэхэд ХАБЭА болон ГТХАБ хангах"
+            }
+            ,
+            {
+                id: 10,
+                title: "Замын даргын А/24 тоот тушаал",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: " Зам засварын ажлын технологийн карт"
+            }
+            ,
+            {
+                id: 11,
+                title: "Замын даргын А/699 тоот тушаал",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: "УБТЗ-н ажилтнуудын ажлын байрны сургалт, хөгжлийн журам"
+            }
+            ,
+            {
+                id: 12,
+                title: "Замын албаны даргын П/04 тоот тушаал",
+                url: "https://www.youtube.com/watch?v=s-sRvyFMlSY",
+                description: " үйлчилгээ хийх үеийн хамгаалалт."
+            }
+        ];
+
+        const defaultLogs = [
+            {
+                id: 1,
+                empName: "С.Бат-Эрдэнэ",
+                empPosition: "Гагнуурчин",
+                empSection: "ПД-5 Бригад Б.Оргил",
+                videoTitle: "Төмөр замын зам засварын үеийн ХАБЭА дүрэм",
+                date: "2026-09-29 10:15"
+            }
+        ];
+
+        // Videos are managed in this code list; employee logs remain in LocalStorage.
+        let videos = defaultVideos;
+        let logs = JSON.parse(localStorage.getItem('hab_logs')) || defaultLogs;
+
+        function saveData() {
+            localStorage.setItem('hab_logs', JSON.stringify(logs));
+            updateStats();
+        }
+
+        // Convert common YouTube links to the format required by an iframe.
+        function normalizeVideoUrl(value) {
+            const url = value.trim();
+
+            try {
+                const parsedUrl = new URL(url);
+                const hostname = parsedUrl.hostname.replace('www.', '');
+                let videoId = parsedUrl.searchParams.get('v');
+
+                if (hostname === 'youtu.be') {
+                    videoId = parsedUrl.pathname.slice(1).split('/')[0];
+                } else if (hostname === 'youtube.com') {
+                    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+                    if (pathParts[0] === 'embed' || pathParts[0] === 'shorts') {
+                        videoId = pathParts[1];
+                    }
+                }
+
+                if ((hostname === 'youtube.com' || hostname === 'youtu.be') && videoId) {
+                    return `https://www.youtube.com/embed/${videoId}`;
+                }
+            } catch (error) {
+                return url;
+            }
+
+            return url;
+        }
+
+        // Tab Switching
+        function switchTab(tab) {
+            const empSection = document.getElementById('section-employee');
+            const engSection = document.getElementById('section-engineer');
+            const btnEmp = document.getElementById('btn-employee');
+            const btnEng = document.getElementById('btn-engineer');
+
+            if (tab === 'employee') {
+                empSection.classList.remove('hidden');
+                engSection.classList.add('hidden');
+                btnEmp.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-600 text-white transition shadow-sm";
+                btnEng.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition";
+                renderEmployeeVideos();
+            } else {
+                empSection.classList.add('hidden');
+                engSection.classList.remove('hidden');
+                btnEng.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-600 text-white transition shadow-sm";
+                btnEmp.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition";
+                renderEngineerLogs();
+            }
+        }
+
+        // Render Employee Video Cards
+        function renderEmployeeVideos() {
+            const grid = document.getElementById('employee-video-grid');
+            const query = document.getElementById('search-input').value.toLowerCase();
+            grid.innerHTML = '';
+
+            const filtered = videos.filter(v => v.title.toLowerCase().includes(query) || v.description.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400"><i class="fa-solid fa-folder-open text-4xl mb-2"></i><p>Зааварчилгаа олдсонгүй.</p></div>`;
+                return;
+            }
+
+            filtered.forEach(video => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100 flex flex-col justify-between hover:shadow-lg transition">
+                        <div>
+                            <div class="bg-slate-900 aspect-video flex items-center justify-center relative group cursor-pointer" onclick="openModal(${video.id})">
+                                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition">
+                                        <i class="fa-solid fa-play ml-0.5"></i>
+                                    </div>
+                                </div>
+                                <span class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded font-medium">Видео заавар</span>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-slate-900 text-base mb-1 line-clamp-1">${video.title}</h3>
+                                <p class="text-xs text-slate-500 line-clamp-2">${video.description}</p>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="openModal(${video.id})" class="w-full py-2.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-semibold text-xs rounded-xl transition flex items-center justify-center">
+                                <i class="fa-solid fa-circle-check mr-1.5"></i> Видео үзэж, баталгаажуулах
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Open Video Modal
+        function openModal(id) {
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+
+            document.getElementById('modal-title').innerText = video.title;
+            document.getElementById('modal-desc').innerText = video.description;
+            const videoUrl = normalizeVideoUrl(video.url);
+            const iframe = document.getElementById('modal-iframe');
+            const videoPlayer = document.getElementById('modal-video');
+            const isMp4 = /\.(mp4|webm|ogg)(\?.*)?$/i.test(videoUrl);
+
+            iframe.src = isMp4 ? '' : videoUrl;
+            iframe.classList.toggle('hidden', isMp4);
+            videoPlayer.src = isMp4 ? videoUrl : '';
+            videoPlayer.classList.toggle('hidden', !isMp4);
+            document.getElementById('modal-vid-id').value = video.id;
+            document.getElementById('emp-name').value = '';
+            document.getElementById('emp-position').value = '';
+            document.getElementById('emp-section').value = '';
+
+            document.getElementById('video-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('video-modal').classList.add('hidden');
+            document.getElementById('modal-iframe').src = '';
+            const videoPlayer = document.getElementById('modal-video');
+            videoPlayer.pause();
+            videoPlayer.src = '';
+        }
+
+        // Handle Employee Sign Form
+        function handleSignForm(e) {
+            e.preventDefault();
+            const vidId = parseInt(document.getElementById('modal-vid-id').value);
+            const empName = document.getElementById('emp-name').value.trim();
+            const empPosition = document.getElementById('emp-position').value.trim();
+            const empSection = document.getElementById('emp-section').value.trim();
+            const video = videos.find(v => v.id === vidId);
+
+            if (!video) return;
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            const newLog = {
+                id: Date.now(),
+                empName,
+                empPosition,
+                empSection,
+                videoTitle: video.title,
+                date: dateStr
+            };
+
+            logs.unshift(newLog);
+            saveData();
+            closeModal();
+            alert("Таны зааварчилгаа авсан бүртгэл амжилттай хадгалагдлаа!");
+        }
+
+        // Engineer: Render Logs
+        function renderEngineerLogs() {
+            const tbody = document.getElementById('logs-table-body');
+            tbody.innerHTML = '';
+            renderMonthlySummary();
+
+            if (logs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">Одоогоор баталгаажсан бүртгэл байхгүй байна.</td></tr>`;
+                return;
+            }
+
+            logs.forEach(log => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-3 px-4 font-semibold text-slate-900">${log.empName}</td>
+                        <td class="py-3 px-4 text-slate-600">${log.empPosition}</td>
+                        <td class="py-3 px-4 text-slate-600">${log.empSection || '-'}</td>
+                        <td class="py-3 px-4 text-slate-800 font-medium">${log.videoTitle}</td>
+                        <td class="py-3 px-4 text-xs text-slate-500">${log.date}</td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="deleteLog(${log.id})" class="text-rose-500 hover:text-rose-700 transition p-1"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            updateStats();
+        }
+
+        function renderMonthlySummary() {
+            const container = document.getElementById('monthly-summary');
+            if (!container) return;
+
+            if (logs.length === 0) {
+                container.innerHTML = '<p class="py-6 text-center text-slate-400">Одоогоор тайлан гаргах бүртгэл байхгүй байна.</p>';
+                return;
+            }
+
+            const monthlyData = {};
+            const sectionData = {};
+            const positionData = {};
+
+            logs.forEach(log => {
+                const month = log.date.slice(0, 7);
+                const section = log.empSection || 'Хэсэг бүртгэгдээгүй';
+                const position = log.empPosition || 'Албан тушаал бүртгэгдээгүй';
+                const monthlyKey = `${month}|${log.videoTitle}`;
+
+                if (!monthlyData[monthlyKey]) {
+                    monthlyData[monthlyKey] = {
+                        month,
+                        videoTitle: log.videoTitle,
+                        employees: new Set()
+                    };
+                }
+                monthlyData[monthlyKey].employees.add(log.empName);
+
+                if (!sectionData[section]) sectionData[section] = new Set();
+                if (!positionData[position]) positionData[position] = new Set();
+                sectionData[section].add(log.empName);
+                positionData[position].add(log.empName);
+            });
+
+            const monthlyRows = Object.values(monthlyData).sort((a, b) => {
+                return b.month.localeCompare(a.month) || a.videoTitle.localeCompare(b.videoTitle);
+            });
+            const sectionRows = Object.entries(sectionData)
+                .map(([label, employees]) => ({ label, employees }))
+                .sort((a, b) => b.employees.size - a.employees.size);
+            const positionRows = Object.entries(positionData)
+                .map(([label, employees]) => ({ label, employees }))
+                .sort((a, b) => b.employees.size - a.employees.size);
+            const monthlyMaximum = Math.max(...monthlyRows.map(row => row.employees.size), 1);
+            const positionMaximum = Math.max(...positionRows.map(row => row.employees.size), 1);
+            const totalEmployees = new Set(logs.map(log => log.empName)).size;
+            const totalCourses = new Set(logs.map(log => log.videoTitle)).size;
+            const sectionPalette = ['#10b981', '#3b82f6', '#f59e0b', '#f43f5e', '#8b5cf6', '#06b6d4'];
+            const sectionTotal = sectionRows.reduce((total, row) => total + row.employees.size, 0);
+            let sectionOffset = 0;
+            const sectionStops = sectionRows.map((row, index) => {
+                const start = sectionOffset;
+                sectionOffset += (row.employees.size / sectionTotal) * 100;
+                return `${sectionPalette[index % sectionPalette.length]} ${start}% ${sectionOffset}%`;
+            }).join(', ');
+
+            const renderPositionBars = () => `
+                <section class="rounded-2xl border border-slate-200 bg-white/70 p-5">
+                    <div class="mb-5 flex items-center gap-3">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600"><i class="fa-solid fa-briefcase"></i></span>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900">Албан тушаалын хамрагдалт</h4>
+                            <p class="text-xs text-slate-500">Албан тушаал тус бүрээр</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        ${positionRows.map((row, index) => `
+                            <div>
+                                <div class="mb-1.5 flex justify-between gap-3 text-xs">
+                                    <span class="truncate text-slate-600" title="${row.label}">${row.label}</span>
+                                    <strong class="shrink-0 text-slate-900">${row.employees.size} хүн</strong>
+                                </div>
+                                <div class="h-2.5 overflow-hidden rounded-full bg-slate-100">
+                                    <div class="h-full rounded-full" style="width: ${(row.employees.size / positionMaximum) * 100}%; background: ${sectionPalette[index % sectionPalette.length]}"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `;
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/70 p-4">
+                        <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-[5px] border-emerald-100 bg-emerald-50 text-xl font-extrabold text-emerald-700">${totalEmployees}</div>
+                        <div><p class="text-xs font-semibold uppercase text-slate-500">Хамрагдсан хүн</p><p class="mt-1 text-sm font-bold text-slate-900">Давхардалгүй</p></div>
+                    </div>
+                    <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/70 p-4">
+                        <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-[5px] border-blue-100 bg-blue-50 text-xl font-extrabold text-blue-700">${logs.length}</div>
+                        <div><p class="text-xs font-semibold uppercase text-slate-500">Нийт бүртгэл</p><p class="mt-1 text-sm font-bold text-slate-900">Зааварчилгаа авсан</p></div>
+                    </div>
+                    <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/70 p-4">
+                        <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-[5px] border-amber-100 bg-amber-50 text-xl font-extrabold text-amber-700">${totalCourses}</div>
+                        <div><p class="text-xs font-semibold uppercase text-slate-500">Хичээл</p><p class="mt-1 text-sm font-bold text-slate-900">Хамрагдсан төрөл</p></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <section class="rounded-2xl border border-slate-200 bg-white/70 p-5">
+                        <div class="mb-5 flex items-center gap-3">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><i class="fa-solid fa-chart-pie"></i></span>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-900">Хэсгийн хамрагдалт</h4>
+                                <p class="text-xs text-slate-500">Хэсэг тус бүрээр</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center gap-5 sm:flex-row">
+                            <div class="summary-donut relative h-36 w-36 shrink-0 rounded-full" style="--donut-stops: ${sectionStops}">
+                                <div class="absolute inset-4 flex flex-col items-center justify-center rounded-full bg-white text-center">
+                                    <strong class="text-2xl text-slate-900">${sectionTotal}</strong>
+                                    <span class="text-[10px] font-semibold uppercase text-slate-500">хамрагдалт</span>
+                                </div>
+                            </div>
+                            <div class="w-full space-y-3">
+                                ${sectionRows.map((row, index) => `
+                                    <div class="flex items-center justify-between gap-3 text-xs">
+                                        <span class="flex min-w-0 items-center gap-2 text-slate-600">
+                                            <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background: ${sectionPalette[index % sectionPalette.length]}"></span>
+                                            <span class="truncate" title="${row.label}">${row.label}</span>
+                                        </span>
+                                        <strong class="shrink-0 text-slate-900">${row.employees.size}</strong>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+                    ${renderPositionBars()}
+                </div>
+                <section class="rounded-2xl border border-slate-200 bg-white/70 p-5">
+                    <div class="mb-5 flex items-center gap-3">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 text-amber-600"><i class="fa-solid fa-chart-column"></i></span>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900">Сар бүрийн хичээлийн хамрагдалт</h4>
+                            <p class="text-xs text-slate-500">Хичээл тус бүрээр хамрагдсан хүний тоо</p>
+                        </div>
+                    </div>
+                    <div class="flex items-end gap-3 overflow-x-auto border-b border-slate-200 pb-3">
+                        ${monthlyRows.map(row => `
+                            <div class="summary-column flex flex-col items-center gap-2" title="${row.month} - ${row.videoTitle}: ${row.employees.size} хүн">
+                                <strong class="text-xs text-slate-700">${row.employees.size}</strong>
+                                <div class="flex h-32 w-12 items-end overflow-hidden rounded-t-xl bg-amber-50">
+                                    <div class="w-full rounded-t-xl bg-amber-400" style="height: ${Math.max((row.employees.size / monthlyMaximum) * 100, 8)}%"></div>
+                                </div>
+                                <span class="w-full truncate text-center text-[10px] font-semibold text-slate-700">${row.month}</span>
+                                <span class="w-full truncate text-center text-[10px] text-slate-500">${row.videoTitle}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `;
+        }
+
+        function deleteLog(id) {
+            if (confirm("Энэ бүртгэлийг устгахдаа итгэлтэй байна уу?")) {
+                logs = logs.filter(l => l.id !== id);
+                saveData();
+                renderEngineerLogs();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total-videos').innerText = videos.length;
+            document.getElementById('stat-total-logs').innerText = logs.length;
+        }
+
+        // Export logs to CSV
+        function exportLogsCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,Ажилтны нэр,Албан тушаал,Хэсэг,Зааварчилгааны нэр,Огноо\n";
+            logs.forEach(l => {
+                csvContent += `"${l.empName}","${l.empPosition}","${l.empSection || ''}","${l.videoTitle}","${l.date}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "hab_zaavarchilgaa_burtgel.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initialize App on load
+        window.onload = function() {
+            renderEmployeeVideos();
+            updateStats();
+        };
+    </script>
+</body>
+</html>
